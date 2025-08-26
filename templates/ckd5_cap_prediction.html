@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ translations.title }}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            margin: 20px auto;
+            max-width: 1200px;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .language-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+
+        .language-btn:hover,
+        .language-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--primary-color);
+            font-weight: 500;
+            padding: 15px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .feature-group {
+            background: var(--light-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .feature-group h5 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-col {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .form-col:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        .feature-description {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .normal-range {
+            font-size: 0.8em;
+            color: var(--success-color);
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        .btn-predict {
+            background: linear-gradient(135deg, var(--success-color) 0%, #2ecc71 100%);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-predict:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3);
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .result-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card {
+            background: var(--light-bg);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .language-switcher {
+                position: static;
+                margin-bottom: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="main-container">
+            <!-- 头部 -->
+            <div class="header">
+                <div class="language-switcher">
+                    <button class="btn language-btn" onclick="switchLanguage('zh')" id="btn-zh">
+                        <i class="fas fa-globe"></i> 中文
+                    </button>
+                    <button class="btn language-btn" onclick="switchLanguage('en')" id="btn-en">
+                        <i class="fas fa-globe"></i> English
+                    </button>
+                </div>
+                <h1 class="mb-3" id="main-title">{{ translations.title }}</h1>
+                <p class="lead mb-0" id="main-subtitle">{{ translations.subtitle }}</p>
+            </div>
+
+            <!-- 主要内容 -->
+            <div class="p-4">
+                <!-- 导航标签 -->
+                <ul class="nav nav-tabs mb-4" id="predictionTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="single-tab" data-bs-toggle="tab" data-bs-target="#single-prediction" type="button" role="tab">
+                            <i class="fas fa-user"></i> <span data-translate="single_prediction">{{ translations.single_prediction }}</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batch-prediction" type="button" role="tab">
+                            <i class="fas fa-users"></i> <span data-translate="batch_prediction">{{ translations.batch_prediction }}</span>
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- 标签内容 -->
+                <div class="tab-content" id="predictionTabsContent">
+                    <!-- 单患者预测 -->
+                    <div class="tab-pane fade show active" id="single-prediction" role="tabpanel">
+                        <form id="predictionForm">
+                            <!-- 基本信息 -->
+                            <div class="feature-group">
+                                <h5><i class="fas fa-user-circle"></i> <span data-translate="basic_info">{{ translations.basic_info }}</span></h5>
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label for="年龄" class="form-label">
+                                            <span data-translate-feature="年龄">{{ chinese_names['年龄'] if current_lang == 'zh' else english_names['年龄'] }}</span>
+                                        </label>
+                                        <input type="number" class="form-control" id="年龄" name="年龄" min="0" max="120" step="1">
+                                        <div class="feature-description">{{ feature_descriptions['年龄']['desc'] }}</div>
+                                        <div class="normal-range">{{ translations.normal_range if current_lang == 'en' else '正常范围' }}: {{ feature_descriptions['年龄']['range'] }} {{ feature_descriptions['年龄']['unit'] }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 既往病史 -->
+                            <div class="feature-group">
+                                <h5><i class="fas fa-history"></i> <span data-translate="medical_history">{{ translations.medical_history }}</span></h5>
+                                <div class="form-row">
+                                    {% for feature in ['饮酒史', '冠心病'] %}
+                                    <div class="form-col">
+                                        <label for="{{ feature }}" class="form-label">
+                                            <span data-translate-feature="{{ feature }}">{{ chinese_names[feature] if current_lang == 'zh' else english_names[feature] }}</span>
+                                        </label>
+                                        <select class="form-control" id="{{ feature }}" name="{{ feature }}">
+                                            <option value="">-- <span data-translate="select">请选择</span> --</option>
+                                            <option value="0" data-translate="no">{{ translations.no }}</option>
+                                            <option value="1" data-translate="yes">{{ translations.yes }}</option>
+                                        </select>
+                                        <div class="feature-description">{{ feature_descriptions[feature]['desc'] }}</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- 影像学检查 -->
+                            <div class="feature-group">
+                                <h5><i class="fas fa-x-ray"></i> <span data-translate="imaging">{{ translations.imaging }}</span></h5>
+                                <div class="form-row">
+                                    {% for feature in ['炎症累及肺炎数≥3', '炎症累计双肺'] %}
+                                    <div class="form-col">
+                                        <label for="{{ feature }}" class="form-label">
+                                            <span data-translate-feature="{{ feature }}">{{ chinese_names[feature] if current_lang == 'zh' else english_names[feature] }}</span>
+                                        </label>
+                                        <select class="form-control" id="{{ feature }}" name="{{ feature }}">
+                                            <option value="">-- <span data-translate="select">请选择</span> --</option>
+                                            <option value="0" data-translate="no">{{ translations.no }}</option>
+                                            <option value="1" data-translate="yes">{{ translations.yes }}</option>
+                                        </select>
+                                        <div class="feature-description">{{ feature_descriptions[feature]['desc'] }}</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- 临床评分 -->
+                            <div class="feature-group">
+                                <h5><i class="fas fa-calculator"></i> <span data-translate="clinical_scores">临床评分</span></h5>
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label for="CURB65评分" class="form-label">
+                                            <span data-translate-feature="CURB65评分">{{ chinese_names['CURB65评分'] if current_lang == 'zh' else english_names['CURB65评分'] }}</span>
+                                        </label>
+                                        <input type="number" class="form-control" id="CURB65评分" name="CURB65评分" min="0" max="5" step="1">
+                                        <div class="feature-description">{{ feature_descriptions['CURB65评分']['desc'] }}</div>
+                                        <div class="normal-range">{{ translations.normal_range if current_lang == 'en' else '正常范围' }}: {{ feature_descriptions['CURB65评分']['range'] }} {{ feature_descriptions['CURB65评分']['unit'] }}</div>
+                                    </div>
+                                    <div class="form-col">
+                                        <label for="重度肺炎" class="form-label">
+                                            <span data-translate-feature="重度肺炎">{{ chinese_names['重度肺炎'] if current_lang == 'zh' else english_names['重度肺炎'] }}</span>
+                                        </label>
+                                        <select class="form-control" id="重度肺炎" name="重度肺炎">
+                                            <option value="">-- <span data-translate="select">请选择</span> --</option>
+                                            <option value="0" data-translate="no">{{ translations.no }}</option>
+                                            <option value="1" data-translate="yes">{{ translations.yes }}</option>
+                                        </select>
+                                        <div class="feature-description">{{ feature_descriptions['重度肺炎']['desc'] }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 血常规 -->
+                            <div class="feature-group">
+                                <h5><i class="fas fa-tint"></i> <span data-translate="blood_routine">{{ translations.blood_routine }}</span></h5>
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label for="PLR" class="form-label">
+                                            <span data-translate-feature="PLR">{{ chinese_names['PLR'] if current_lang == 'zh' else english_names['PLR'] }}</span>
+                                        </label>
+                                        <input type="number" class="form-control" id="PLR" name="PLR" step="0.01">
+                                        <div class="feature-description">{{ feature_descriptions['PLR']['desc'] }}</div>
+                                        <div class="normal-range">{{ translations.normal_range if current_lang == 'en' else '正常范围' }}: {{ feature_descriptions['PLR']['range'] }} {{ feature_descriptions['PLR']['unit'] }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 生化检查 -->
+                            <div class="feature-group">
+                                <h5><i class="fas fa-flask"></i> <span data-translate="biochemistry">{{ translations.biochemistry }}</span></h5>
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label for="UA" class="form-label">
+                                            <span data-translate-feature="UA">{{ chinese_names['UA'] if current_lang == 'zh' else english_names['UA'] }}</span>
+                                        </label>
+                                        <input type="number" class="form-control" id="UA" name="UA" step="0.01">
+                                        <div class="feature-description">{{ feature_descriptions['UA']['desc'] }}</div>
+                                        <div class="normal-range">{{ translations.normal_range if current_lang == 'en' else '正常范围' }}: {{ feature_descriptions['UA']['range'] }} {{ feature_descriptions['UA']['unit'] }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 凝血功能 -->
+                            <div class="feature-group">
+                                <h5><i class="fas fa-heartbeat"></i> <span data-translate="coagulation">{{ translations.coagulation }}</span></h5>
+                                <div class="form-row">
+                                    <div class="form-col">
+                                        <label for="DDimer" class="form-label">
+                                            <span data-translate-feature="DDimer">{{ chinese_names['DDimer'] if current_lang == 'zh' else english_names['DDimer'] }}</span>
+                                        </label>
+                                        <input type="number" class="form-control" id="DDimer" name="DDimer" step="0.01">
+                                        <div class="feature-description">{{ feature_descriptions['DDimer']['desc'] }}</div>
+                                        <div class="normal-range">{{ translations.normal_range if current_lang == 'en' else '正常范围' }}: {{ feature_descriptions['DDimer']['range'] }} {{ feature_descriptions['DDimer']['unit'] }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 操作按钮 -->
+                            <div class="text-center mt-4">
+                                <button type="button" class="btn btn-secondary me-3" onclick="clearForm()">
+                                    <i class="fas fa-eraser"></i> <span data-translate="clear_button">{{ translations.clear_button }}</span>
+                                </button>
+                                <button type="submit" class="btn btn-predict">
+                                    <i class="fas fa-brain"></i> <span data-translate="predict_button">{{ translations.predict_button }}</span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- 加载动画 -->
+                        <div class="loading" id="loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3" data-translate="loading">{{ translations.loading }}</p>
+                        </div>
+
+                        <!-- 预测结果 -->
+                        <div id="result" class="result-card" style="display: none;">
+                            <h3><i class="fas fa-chart-line"></i> <span data-translate="prediction_result">{{ translations.prediction_result }}</span></h3>
+                            <div id="resultContent"></div>
+                        </div>
+                    </div>
+
+                    <!-- 批量预测 -->
+                    <div class="tab-pane fade" id="batch-prediction" role="tabpanel">
+                        <div class="feature-card">
+                            <h4><i class="fas fa-upload"></i> <span data-translate="upload_file">{{ translations.upload_file }}</span></h4>
+                            <form id="batchForm" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <input type="file" class="form-control" id="batchFile" name="file" accept=".csv,.xlsx,.xls" required>
+                                    <div class="form-text">支持CSV和Excel文件格式</div>
+                                </div>
+                                <button type="submit" class="btn btn-predict">
+                                    <i class="fas fa-upload"></i> <span data-translate="batch_predict">批量预测</span>
+                                </button>
+                            </form>
+                            <div id="batchResult" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let currentLang = '{{ current_lang }}';
+        let translations = {{ translations | tojson }};
+
+        // 语言切换功能
+        function switchLanguage(lang) {
+            if (lang === currentLang) return;
+            
+            fetch(`/set_language/${lang}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        currentLang = lang;
+                        updateLanguageButtons();
+                        loadTranslations(lang);
+                    }
+                })
+                .catch(error => {
+                    console.error('语言切换失败:', error);
+                });
+        }
+
+        // 更新语言按钮状态
+        function updateLanguageButtons() {
+            document.querySelectorAll('.language-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`btn-${currentLang}`).classList.add('active');
+        }
+
+        // 加载翻译文本
+        function loadTranslations(lang) {
+            fetch(`/get_translations/${lang}`)
+                .then(response => response.json())
+                .then(data => {
+                    translations = data;
+                    updatePageContent();
+                })
+                .catch(error => {
+                    console.error('加载翻译失败:', error);
+                });
+        }
+
+        // 更新页面内容
+        function updatePageContent() {
+            // 更新标题
+            document.getElementById('main-title').textContent = translations.title;
+            document.getElementById('main-subtitle').textContent = translations.subtitle;
+            
+            // 更新所有带有data-translate属性的元素
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[key]) {
+                    element.textContent = translations[key];
+                }
+            });
+
+            // 更新特征名称
+            const chineseNames = {{ chinese_names | tojson }};
+            const englishNames = {{ english_names | tojson }};
+            
+            document.querySelectorAll('[data-translate-feature]').forEach(element => {
+                const feature = element.getAttribute('data-translate-feature');
+                if (currentLang === 'zh') {
+                    element.textContent = chineseNames[feature] || feature;
+                } else {
+                    element.textContent = englishNames[feature] || feature;
+                }
+            });
+
+            // 更新选择选项
+            updateSelectOptions();
+        }
+
+        // 更新选择框选项
+        function updateSelectOptions() {
+            // 更新是/否选项
+            document.querySelectorAll('select[id]').forEach(select => {
+                if (select.children.length === 3) { // 只更新是/否选择框
+                    const currentValue = select.value;
+                    select.innerHTML = `
+                        <option value="">-- ${translations.select || '请选择'} --</option>
+                        <option value="0">${translations.no}</option>
+                        <option value="1">${translations.yes}</option>
+                    `;
+                    select.value = currentValue;
+                }
+            });
+        }
+
+        // 清空表单
+        function clearForm() {
+            document.getElementById('predictionForm').reset();
+            document.getElementById('result').style.display = 'none';
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLanguageButtons();
+            
+            // 单患者预测表单提交
+            document.getElementById('predictionForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                predictSingle();
+            });
+
+            // 批量预测表单提交
+            document.getElementById('batchForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                predictBatch();
+            });
+        });
+
+        // 单患者预测
+        function predictSingle() {
+            const formData = new FormData(document.getElementById('predictionForm'));
+            
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                
+                // 调试：打印返回的数据结构
+                console.log('服务器返回的数据:', data);
+                console.log('SHAP解释字段:', data.shap_explanation);
+                
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showResult(data);
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                showError('预测过程中发生错误，请重试。');
+                console.error('预测错误:', error);
+            });
+        }
+
+        // 批量预测
+        function predictBatch() {
+            const formData = new FormData(document.getElementById('batchForm'));
+            
+            fetch('/batch_predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showBatchResult(data);
+                }
+            })
+            .catch(error => {
+                showError('批量预测过程中发生错误，请重试。');
+                console.error('批量预测错误:', error);
+            });
+        }
+
+        // 显示预测结果
+        function showResult(data) {
+            const resultContent = document.getElementById('resultContent');
+            const survivalProb = (data.survival_probability * 100).toFixed(1);
+            const deathProb = (data.death_probability * 100).toFixed(1);
+            
+            let riskLevel = '低风险';
+            let riskColor = 'success';
+            if (data.death_probability > 0.7) {
+                riskLevel = '高风险';
+                riskColor = 'danger';
+            } else if (data.death_probability > 0.3) {
+                riskLevel = '中风险';
+                riskColor = 'warning';
+            }
+            
+            resultContent.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card border-success">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-success">
+                                    <i class="fas fa-heart"></i> 生存概率
+                                </h5>
+                                <h2 class="text-success">${survivalProb}%</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card border-danger">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-danger">
+                                    <i class="fas fa-exclamation-triangle"></i> 死亡风险
+                                </h5>
+                                <h2 class="text-danger">${deathProb}%</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <div class="alert alert-${riskColor}" role="alert">
+                        <h5><i class="fas fa-info-circle"></i> 风险等级: ${riskLevel}</h5>
+                    </div>
+                </div>
+                ${data.shap_explanation ? `
+                <div class="mt-4">
+                    <h5><i class="fas fa-chart-bar"></i> SHAP可解释性分析</h5>
+                    <div class="shap-explanation">
+                        ${data.shap_explanation}
+                    </div>
+                </div>
+                ` : ''}
+            `;
+            
+            document.getElementById('result').style.display = 'block';
+        }
+
+        // 显示批量预测结果
+        function showBatchResult(data) {
+            const batchResult = document.getElementById('batchResult');
+            batchResult.innerHTML = `
+                <div class="alert alert-success mt-3">
+                    <h5><i class="fas fa-check-circle"></i> 批量预测完成</h5>
+                    <p>成功处理 ${data.total_predictions} 条记录</p>
+                    <a href="${data.download_url}" class="btn btn-primary">
+                        <i class="fas fa-download"></i> 下载结果文件
+                    </a>
+                </div>
+            `;
+            batchResult.style.display = 'block';
+        }
+
+        // 显示错误信息
+        function showError(message) {
+            const resultContent = document.getElementById('resultContent');
+            resultContent.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <h5><i class="fas fa-exclamation-triangle"></i> 错误</h5>
+                    <p>${message}</p>
+                </div>
+            `;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

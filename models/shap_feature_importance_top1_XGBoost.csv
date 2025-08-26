@@ -1,0 +1,11 @@
+﻿Feature,Chinese_Feature,SHAP_Importance
+CURB65_Score,CURB65评分,1.6711297
+DDimer,DDimer,1.3422804
+Severe_Pneumonia,重度肺炎,1.2954359
+PLR,PLR,1.1085973
+Inflammation_Lung_Count_Gte3,炎症累及肺炎数≥3,0.6827782
+UA,UA,0.29902184
+Age,年龄,0.285445
+Coronary_Heart_Disease,冠心病,0.12537502
+Bilateral_Lung_Inflammation,炎症累计双肺,0.0959624
+Drinking_History,饮酒史,0.044150405
