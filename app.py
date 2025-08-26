@@ -25,6 +25,7 @@ import base64
 from datetime import datetime
 import warnings
 import glob
+import secrets
 from config import FEATURE_NAME_MAP
 warnings.filterwarnings('ignore')
 
@@ -33,7 +34,8 @@ plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'Arial', 'Liberation Sans']
 plt.rcParams['axes.unicode_minus'] = False
 
 app = Flask(__name__)
-app.secret_key = 'ckd5_cap_survival_prediction_app_2025'  # 用于session管理
+# 使用环境变量或随机生成的安全密钥
+app.secret_key = os.getenv('FLASK_SECRET_KEY') or secrets.token_hex(32)
 
 class CKD5CAPSurvivalPredictionApp:
     def __init__(self):
@@ -741,4 +743,5 @@ def model_info():
         return jsonify({'error': f'获取模型信息失败: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=False, host='0.0.0.0', port=5000)
+    # 生产环境安全配置：仅监听本地接口
+    app.run(debug=False, host='127.0.0.1', port=5000)
