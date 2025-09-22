@@ -413,7 +413,7 @@ lsof -i :5000
 ```
 @software{ckd5_cap_prediction_2025,
   title={CKD5期合并CAP生存预测系统},
-  author={开源社区贡献者},
+  author={kuan liu},
   year={2025},
   url={https://github.com/your-username/ckd5-cap-survival-prediction}
 }
